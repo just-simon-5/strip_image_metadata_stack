@@ -1,0 +1,1 @@
+# strip_image_metadata_stack
