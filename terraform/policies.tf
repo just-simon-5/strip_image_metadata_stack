@@ -16,8 +16,51 @@ data "aws_iam_policy_document" "bucket_a_policy" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn-of-lambda", #TODO
+        aws_iam_role.lambda_assume_role.arn,
       ]
     }
+  }
+}
+
+data "aws_iam_policy_document" "lambda_assume_role_policy" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_inline_policy" {
+  name   = "lambda-inline-policy"
+  role   = aws_iam_role.lambda_assume_role.id
+  policy = data.aws_iam_policy_document.lambda_inline_policy.json
+}
+
+data "aws_iam_policy_document" "lambda_inline_policy" {
+
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket",
+    ]
+    resources = [
+      "${aws_s3_bucket.bucket_a.arn}/*",
+      aws_s3_bucket.bucket_a.arn,
+    ]
+  }
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:ListBucket",
+    ]
+    resources = [
+      "${aws_s3_bucket.bucket_b.arn}/*",
+      aws_s3_bucket.bucket_b.arn,
+    ]
   }
 }
