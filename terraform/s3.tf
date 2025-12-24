@@ -12,6 +12,13 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_a_encrypti
   }
 }
 
+resource "aws_s3_bucket_versioning" "bucket_a_versioning" {
+  bucket = aws_s3_bucket.bucket_a.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket" "bucket_b" {
   bucket = "${local.name}-bucket-b-${var.environment}"
 }
@@ -34,6 +41,13 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket_b_lifecycle" {
       days          = 30
       storage_class = "STANDARD_IA"
     }
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "bucket_b_versioning" {
+  bucket = aws_s3_bucket.bucket_b.id
+  versioning_configuration {
     status = "Enabled"
   }
 }
