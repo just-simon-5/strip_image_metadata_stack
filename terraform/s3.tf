@@ -19,6 +19,15 @@ resource "aws_s3_bucket_versioning" "bucket_a_versioning" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "bucket_a" {
+  bucket = aws_s3_bucket.bucket_a.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
 resource "aws_s3_bucket" "bucket_b" {
   bucket = "${local.name}-bucket-b-${var.environment}"
 }
@@ -50,4 +59,13 @@ resource "aws_s3_bucket_versioning" "bucket_b_versioning" {
   versioning_configuration {
     status = "Enabled"
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "bucket_b" {
+  bucket = aws_s3_bucket.bucket_b.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
