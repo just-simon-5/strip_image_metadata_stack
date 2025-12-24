@@ -88,3 +88,22 @@ data "aws_iam_policy_document" "bucket_b_policy" {
     }
   }
 }
+
+resource "aws_iam_user_policy" "user_a_policy" {
+  name   = "${local.user_a}-policy"
+  user   = aws_iam_user.user_a.name
+  policy = data.aws_iam_policy_document.user_a_policy.json
+}
+
+data "aws_iam_policy_document" "user_a_policy" {
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:ListBucket",
+    ]
+    resources = [
+      "${aws_s3_bucket.bucket_a.arn}/*",
+      aws_s3_bucket.bucket_a.arn,
+    ]
+  }
+}
