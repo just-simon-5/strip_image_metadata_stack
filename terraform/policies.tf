@@ -64,3 +64,27 @@ data "aws_iam_policy_document" "lambda_inline_policy" {
     ]
   }
 }
+
+resource "aws_s3_bucket_policy" "bucket_b_policy" {
+  bucket = aws_s3_bucket.bucket_b.id
+  policy = data.aws_iam_policy_document.bucket_b_policy.json
+}
+
+data "aws_iam_policy_document" "bucket_b_policy" {
+  statement {
+    actions = [
+      "s3:PutObject",
+      "s3:ListBucket",
+    ]
+    resources = [
+      "${aws_s3_bucket.bucket_b.arn}/*",
+      aws_s3_bucket.bucket_b.arn,
+    ]
+    principals {
+      type = "AWS"
+      identifiers = [
+        aws_iam_role.lambda_assume_role.arn,
+      ]
+    }
+  }
+}
