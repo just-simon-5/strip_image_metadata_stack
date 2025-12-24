@@ -107,3 +107,22 @@ data "aws_iam_policy_document" "user_a_policy" {
     ]
   }
 }
+
+resource "aws_iam_user_policy" "user_b_policy" {
+  name   = "${local.user_b}-policy"
+  user   = aws_iam_user.user_b.name
+  policy = data.aws_iam_policy_document.user_b_policy.json
+}
+
+data "aws_iam_policy_document" "user_b_policy" {
+  statement {
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket",
+    ]
+    resources = [
+      "${aws_s3_bucket.bucket_b.arn}/*",
+      aws_s3_bucket.bucket_b.arn,
+    ]
+  }
+}
