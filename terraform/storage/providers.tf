@@ -2,7 +2,7 @@ terraform {
   required_version = "~> 1.14.3"
 
   backend "s3" {
-    key    = "strip-image-metadata.tfstate"
+    key    = "${local.name}.tfstate"
     region = var.region
   }
   required_providers {
